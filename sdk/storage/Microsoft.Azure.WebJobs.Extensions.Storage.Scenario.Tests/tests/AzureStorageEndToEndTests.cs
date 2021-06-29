@@ -14,6 +14,7 @@ using Azure.Storage.Queues.Models;
 using Microsoft.Azure.WebJobs.Extensions.Storage.Common.Tests;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Queues;
+using Microsoft.Azure.WebJobs.Host.Scale;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
@@ -160,7 +161,19 @@ namespace Microsoft.Azure.WebJobs.Extensions.Storage.ScenarioTests
             await EndToEndTest(uploadBlobBeforeHostStart: true);
         }
 
-        private async Task EndToEndTest(bool uploadBlobBeforeHostStart)
+        [Test]
+        public async Task AzureStorageEndToEnd_DynamicConcurrency()
+        {
+            await EndToEndTest(uploadBlobBeforeHostStart: true, b =>
+            {
+                b.Services.AddOptions<ConcurrencyOptions>().Configure(options =>
+                {
+                    options.DynamicConcurrencyEnabled = true;
+                });
+            });
+        }
+
+        private async Task EndToEndTest(bool uploadBlobBeforeHostStart, Action<IWebJobsBuilder> additionalSetup = null)
         {
             // Reinitialize the name resolver to avoid conflicts
             _resolver = new RandomNameResolver();
@@ -169,6 +182,8 @@ namespace Microsoft.Azure.WebJobs.Extensions.Storage.ScenarioTests
                 .ConfigureDefaultTestHost<AzureStorageEndToEndTests>(b =>
                 {
                     b.AddAzureStorageBlobs().AddAzureStorageQueues();
+
+                    additionalSetup?.Invoke(b);
                 })
                 .ConfigureServices(services =>
                 {

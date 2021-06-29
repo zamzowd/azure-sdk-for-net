@@ -2,7 +2,7 @@
 
 ## 5.0.0-beta.5 (Unreleased)
 - QueuesOptions.MaxPollingInterval other than default is now honored in "Development" environment.
-
+- Adding Dynamic Concurrency support.
 
 ## 5.0.0-beta.4 (2021-05-18)
 - Fixed bug where custom implementations of `IQueueProcessorFactory` could overwrite each other settings.

@@ -7,6 +7,7 @@ using System.Globalization;
 using Azure.Storage.Queues;
 using Microsoft.Azure.WebJobs.Extensions.Storage.Common;
 using Microsoft.Azure.WebJobs.Extensions.Storage.Common.Listeners;
+using Microsoft.Azure.WebJobs.Host.Scale;
 using Microsoft.Azure.WebJobs.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -56,7 +57,9 @@ namespace Microsoft.Azure.WebJobs.Host
         /// is above <see cref="NewBatchThreshold"/>. Then the job requests new batch of messages only if number of currently processed messages
         /// drops at or below <see cref="NewBatchThreshold"/>.
         ///
-        /// The maximum number of messages processed in parallel by the job is <see cref="NewBatchThreshold"/> plus <see cref="BatchSize"/>.
+        /// The maximum number of messages processed in parallel by the job is <see cref="NewBatchThreshold"/> plus <see cref="BatchSize"/>. These manually
+        /// configured options aren't used when Dynamic Concurrency is enabled. See <see cref="ConcurrencyOptions.DynamicConcurrencyEnabled"/> for details.
+        /// When DynamicConcurrency is enabled, the host will adjust per function concurrency up or down dynamically based on host health.
         /// </remarks>
         /// </summary>
         public int BatchSize
