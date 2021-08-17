@@ -173,7 +173,7 @@ namespace Azure.AI.MetricsAdvisor.Tests
             MockRequest request = mockTransport.Requests.First();
             string content = ReadContent(request);
 
-            Assert.That(content, ContainsJsonString(secretPropertyName, "new_secret"));
+            Assert.That(content, ContainsJsonString(secretPropertyName, "pwd1"));
         }
 
         [Test]
